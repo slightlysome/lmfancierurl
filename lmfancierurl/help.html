@@ -1,0 +1,524 @@
+<h3>Plugin overview</h3>
+
+<p>
+The NP_LMFancierURL plugin provides the posibility to use search engine optimized URLs for a Nucleus CMS blog site. 
+A URL friendly version of each blog name, member name, item title, category name and extra skin name is generated 
+by the plugin. These URL friendly values are then used when the URL for blogs, members, categories, items and extra 
+skin is parsed or generated. These values can be edited by the blog administrator or the site super administrator.
+</p>
+
+<p>
+This plugin was originally made to replace the NP_FancierURL2 plugin that have several bugs and problems.
+Version 2 of the NP_LMFancierURL plugin was rewritten from scratch to be able to include the new version 2 features.
+</p>
+
+<p>
+The plugin offers 3 different URL schemes. What URL scheme to use can be configured globaly for the
+site or for each blog.
+</p>
+
+<p>
+Available URL schemes are:
+</p>
+
+<ul>
+<li><b>Fancier</b> - This is the old URL scheme used in NP_FancierURL2.
+URLs are build up with a keyword/value structure. The keywords and values used are editable.  
+Example: www.example.com/blog/myblog/item/an-item-title
+</li>
+<li><b>Compact</b> - This is a new URL scheme introduced in version 2 of NP_FancierURL plugin. 
+It's like Fancier URL scheme, but drops the keywords from the URL. The makes the URL more compact. 
+The values used are editable.
+Example: www.example.com/myblog/an-item-title
+</li>
+<li><b>Classic</b> - This is simmular to the URL scheme you get when you activate FancyURL in Nucleus 
+configuration, but don't install a FancyURL plugin. URLs will be build up as with the Fancier URL scheme, 
+but will use interal id numbers instead of text values. The keywords used are editable.
+Example: www.example.com/blog/1/item/53
+</li>
+</ul>
+
+<p>
+In addition to the 3 URL schemes is it possible to use freeform item URL parts. 
+With freeform item URL parts can you enter the URL part that you want to use to identify an item in a blog. 
+Unlike normal URL parts can a freeform item URL part consist of one or more / character.
+With this you can simulate directory structures more freely with freeform item URL than with normal URL parts.
+Templates can be used to automatically generate freeform item URL parts from the item data.
+</p>
+
+<p>
+In version 3 of the plugin was custom base URLs introduced. 
+With this functionality can you make the different blogs in a 
+Nucleus installation has different domains and/or Nucleus directories. 
+It is also possible to set the custom base URL for a blog to also identify the blog. 
+With this option set will not a blog URL part be needed in the URL to any pages in the blog.
+</p>
+
+<p>
+The NP_LMFancierURL plugin uses a helper plugin for handling the URL part values. This plugin is called 
+NP_LMURLParts and is used to store and edit the URL part values to be used in the generated URLs. This 
+plugin must be installed before the NP_LMFancierURL plugin can be installed. The NP_LMURLParts plugin can be downloaded from 
+the NP_LMURLParts <a href="http://www.slightlysome.net/nucleus-plugins/np_lmurlparts">plugin page</a>.
+</p>
+
+<h3>Installation</h3>
+
+<ul>
+<li>
+Before you can install the NP_LMFancierURL you must install the NP_LMURLParts helper plugin. 
+</li>
+<li>
+Upload the NP_LMFancierURL.php file and the lmfancierurl directory from the zip file to the Nucleus CMS plugins directory (nucleus/plugins) on your web server.
+</li>
+<li>
+Go to the Plugins page in the admin area. You should be able to select the plugin in the dropdown list under the "Install New Plugin" section and press the "Install Plugin" button.
+</li>
+
+<li>
+You now need to make some changes to your Nucleus CMS installation:
+</li>
+
+<ul>
+<li>
+Create a <code>.htaccess</code> file  to the root directory of your Nucleus CMS installation with the following contents:
+<pre>&lt;IfModule mod_rewrite.c&gt;
+        RewriteEngine on
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ index.php?virtualpath=$1 [L,QSA]
+&lt;/IfModule&gt;
+</pre>
+</li>
+
+<li>
+Edit the <code>index.php</code>, <code>xml-rss2.php</code> and <code>atom.php</code> files which you can find in your Nucleus installation directory. 
+Change the value of the <code>$CONF['Self']</code> variable from the default value (the name of the php-file) to the URL that points 
+to your Nucleus installation directory (<b>without the ending slash</b>), for example:
+<pre>$CONF['Self'] = 'http://yourdomain.com/yourNucleusDirectory';</pre>
+</li>
+</ul>
+
+<li>
+Enable the 'Fancy URLs' in the Nucleus admin area, you can find this setting under 
+<em>Management &gt; Configuration</em>.
+</li>
+
+<li>
+After you have done the configuration for the NP_LMFancierURL plugin, update the URL in the Blog settings for each blog to the new fancier URL for the blog.
+</li>
+
+</ul>
+
+<h3>Upgrade</h3>
+
+<p>
+If you upgrade from a V1 version of the NP_LMFancierURL plugin or from NP_FancierURL2 
+you have to uninstall the old plugin before you can install this version of NP_LMFancierURL 
+using the normal install procedure. 
+</p>
+
+<p>
+If you upgrade from a V2 or later version of the NP_LMFancierURL plugin, use the following upgrade procedure:
+</p>
+
+<ul>
+<li>
+Take a backup of the current plugin files. You will need these if you want to rollback to the previous version after the upgrade.
+</li>
+<li>
+Take a backup of the database used for you Nucleus installation.
+</li>
+<li>
+Replace the old plugin files with the new ones by uploading the NP_LMFancierURL.php file 
+and the lmfancierurl directory from the zip file to the Nucleus CMS plugins directory (nucleus/plugins) on your web server. Do not uninstall the plugin.
+</li>
+<li>
+Go to the Plugins page in the admin area and press the "Update subscription list" button.
+</li>
+<li>
+If a plugin data upgrade is needed, will an upgrade plugin data option be 
+available on the NP_LMFancierURL plugin admin page. Choose this option to upgrade the plugin data.
+</li>
+<li>
+After the plugin data upgrade has been performed may a rollback option and a commit option be available on the NP_LMFancierURL 
+plugin admin page. Not all upgrades support the rollback and commit option.
+</li>
+<li>
+If you are not pleased with the new version of the plugin you may use the rollback option to rollback the plugin data upgrade. 
+After the rollback of the plugin data upgrade you have to replace the new plugin files with the old plugin files.
+</li>
+<li>
+If you are pleased with the new version of the plugin you should use the commit option to commit the plugin data upgrade. 
+After the commit of the plugin data upgrade will any rollback and commit options disappear.
+</li>
+</ul>
+
+<p>
+Since the URLs generated by V2 or later versions of NP_FancierURL is not guarantied to be equal 
+to the URLs generated in earlier versions, or the URLs generated by NPFancierURL, you may 
+want to use the NP_LMRedirectToItem plugin to be able to keep old item URLs valid. 
+You must install the NP_LMRedirectToItem plugin and generate the redirects 
+before you uninstall the old fancier URL plugin.
+</p>
+
+<h3>Configuration</h3>
+
+<p>
+The NP_LMFancierURL plugin has the following options on the global level:
+</p>
+
+<ul>
+<li>
+<b>Delete NP_LMFancierURL data on uninstall?</b> - Choose if all data should be deleted when the plugin is uninstalled.
+</li>
+
+<li>
+<b>Hide /blog/name for default blog</b> - Choose if blog identification should be included in URLs generated for content on the default blog. 
+</li>
+
+<li>
+<b>Select global URL scheme</b> - Choose which URL scheme to be used globally. Default value is to use Fancier URL scheme.
+</li>
+
+<li>
+<b>Include the date in URLs for items</b> - Choose if month/date is to be included in generated item URLs for the site. (Example: www.example.com/blog/myblog/item/2011-06-20/item-title)
+</li>
+
+<li>
+<b>Include the category in URLs for items</b> -  Choose if the category of an item is to be included in generated item URLs. 
+<ul>
+<li><b>Always</b>: Will always include the item category in the generated URL. 
+</li>
+<li><b>System Decide</b>: Will only include the item category in the generated URL if the category is selected. This is the default value. 
+With this option set is there more than one URL that points to an item (with and without category). 
+To avoid duplicate item entries in search engines you may want to set up a canonical link in the item page &lt;head&gt; section (see the usage section below).
+</li>
+<li><b>Never</b>: Never include the item category in the generated URL.
+</li>
+</ul>
+</li>
+
+<li>
+<b>Parse the category in URLs for items</b> - Choose if the category is to be parsed when parsing item URLs. 
+When the category is parsed should next item and previous item links generated on the item page 
+link to an item in the same category as the current item. 
+<ul>
+<li><b>Always</b>: Will always parse any category in the item URL. This is the default value.</li>
+<li><b>Never</b>: Will not parse any category in the item URL.</li>
+</ul>
+</li>
+
+<li>
+<b>Allow freeform item URL part input on</b> - Choose when a input field for the freeform item URL part should be available.
+<ul>
+<li><b>Never</b>: Never show the input field for the freeform item URL part. This is the default value.</li>
+<li><b>Item Create</b>: Show the input field for the freeform item URL part on item create page only.</li>
+<li><b>Item Create+Update</b>: Show the input field for the freeform item URL part on both item create and item update page.</li>
+</ul>
+</li>
+
+<li>
+<b>Freeform item URL part template</b> - Set up template for generating freeform item URL part. The template uses variables that will be substituted with item data.
+If no URL part template is given will the following template will be used: <code>/%cat%/%itemid5%/%yy%-%mm%-%dd%/%title%</code>. The variables that can be used is:
+<ul>
+<li><b><code>%title%</code></b>: Title of the item.</li>
+<li><b><code>%itemid%</code></b>: Item id of the item. Use <code>%itemid3%</code>, <code>%itemid4%</code>, <code>%itemid5%</code> or <code>%itemid6%</code> to show the item id as a zero prefixed string of 3, 4, 5 or 6 digits.</li>
+<li><b><code>%cat%</code></b>: Name of the category the item belongs to.</li>
+<li><b><code>%yy%</code></b>: Year the item was posted as a 2 digit number.</li>
+<li><b><code>%yyyy%</code></b>: Year the item was posted as a 4 digit number.</li>
+<li><b><code>%mm%</code></b>: Month the item was posted as a 2 digit number.</li>
+<li><b><code>%dd%</code></b>: Day of the month the item was posted as a 2 digit number.</li>
+</ul>
+</li>
+<li>
+<b>Use freeform item URL part template on</b> - When should the freeform item URL part template be used.
+<ul>
+<li><b>Never</b>: Never generate a freeform item URL part from the template. This is the default value.</li>
+<li><b>Item Create</b>: Generate a freeform item URL part from the template when a new item is created only. 
+	If <b>Allow freeform item URL part input on</b> is set to show a input field for the freeform item URL part,
+	will the freeform item URL part only be generated from the template if the input field for the freeform item URL part was empty.</li>
+<li><b>Item Create+Update</b>: Generate a freeform item URL part from the template both when a new item is created or an existing item is updated. 
+	If <b>Allow freeform item URL part input on</b> is set to show a input field for the freeform item URL part,
+	will the freeform item URL part only be generated from the template if the input field for the freeform item URL part was empty.</li>
+</ul>
+</li>
+<li>
+<b>Redirect to default blog index page</b> - Choose if the plugin should redirect to the URL of the default blog index page when a base URL is used. 
+The redirect used is a temporary redirect.
+Set this option to <code>yes</code> if you want only 1 valid URL for the index page of the default blog. 
+This option is only valid when <b>Hide /blog/name for default blog</b> option is set to <code>no</code>.
+Example: If this option is set to <code>yes</code> will the <code>http://yourdomain.com/directory</code> URL be redirected to the <code>http://yourdomain.com/directory/blog/name</code> URL. 
+If the option is set to <code>no</code> will both URLs show the index page of the default blog, and you will have 2 different URLs that shows the same content.
+</li>
+</ul>
+
+<p>
+The NP_LMFancierURL plugin has also options on the blog level. 
+The default value for most blog options is to use the value of the globally defined options. 
+See the global options description for a description of the options values. Available blog options are:
+</p>
+
+<ul>
+<li>
+<b>Select blog URL scheme</b> - Choose which URL scheme to be used by the blog. 
+</li>
+
+<li>
+<b>Include the date in URLs for items</b> - Choose if month/date is to be included in generated item URLs for the blog.
+</li>
+
+<li>
+<b>Include the category in URLs for items</b> -  Choose if the category of an item is to be included in generated item URLs for this blog. 
+</li>
+
+<li>
+<b>Parse the category in URLs for items</b> - Choose if the category is to be parsed when parsing item URLs for this blog. 
+</li>
+
+<li>
+<b>Allow freeform item URL part input on</b> - Choose when a input field for the freeform item URL part should be available.
+</li>
+
+<li>
+<b>Freeform item URL part template</b> - Set up template for generating freeform item URL part.
+</li>
+
+<li>
+<b>Which freeform item URL part template to use</b> - Select if globally defined template or blog defined template should be used to generating freeform item URL parts.
+</li>
+
+<li>
+<b>Use freeform item URL part template on</b> - When should the freeform item URL part template be used.
+</li>
+
+<li>
+<b>Include blog urlpart in member link</b> - Choose if a blog urlpart should be included in member links on this blog. 
+Set this option to <code>yes</code> if you have blogs with the same base URL (default or custom), but with different skins. 
+This ensures that any member page linked from this blog will be shown in the skin of this blog. 
+</li>
+</ul>
+
+<p>
+Custom base URLs is set up on the plugin admin page. The custom base URL options for a blog are:
+</p>
+
+<ul>
+<li>
+<b>Custom Base URL</b> - The custom base URL for this blog. 
+It must be an URL that is different from the default base URL for your nucleus installation directory that you have set in the <code>index.php</code> file.
+The custom base URL must be a valid URL that points to the same Nucleus installation directory as the default base URL. 
+As the default base URL, must the custom base URL be registered without the ending slash.
+Example of a custom base URL: <code>http://yourotherdomain.com/yourNucleusDirectory</code> 
+</li>
+<li>
+<b>Enabled</b> - Is custom base URL handling enabled for this blog.
+</li>
+<li>
+<b>Default Blog</b> - Is this blog the default blog for this custom base URL. 
+If you have blogs that have the same custom base URL, you should set one of them as the default blog.
+</li>
+<li>
+<b>Identifies Blog</b> - Is the custom base URL of this blog used to identify the blog. 
+If this option is set to <code>yes</code> is no blog urlpart used in links to pages on this blog.
+No other blogs on the Nucleus site can use the same custom base URL as this blog.
+</li>
+</ul>
+
+<h3>Usage</h3>
+
+<p>
+After you have installed the NP_LMFancierURL plugin and set the options you are all set, and don't 
+need to do anything unless you want to customize keywords or URL parts. 
+</p>
+
+<p>
+If you change an item title or name of any other blog object will also the 
+URL part for this object be changed to reflect the new title or name. 
+If you want to use a custom URL part for a blog object or lock the URL part so any changes 
+to the blog object doesn't update the URL part you can use the NP_LMURLParts plugin admin page.
+See the NP_LMURLPart plugin help page for more information on using the NP_LMURLParts plugin admin page. 
+You can also use the NP_LMURLParts plugin admin page to edit the URL part keywords that NP_LMFancierURL should use.
+</p>
+
+<p>
+Because of a shortcoming in the Nuclues core can the NP_LMFancierURL plugin not automatically catch special 
+skin parts that are added to or removed from a skin after the plugin is installed. 
+After you have added or removed a special skin part must you use the "Update special skin part URL parts" 
+function on the NP_LMFancierURL admin page to update the URL parts stored in the NP_LMURLParts plugin.
+</p>
+
+<p>
+When you change URL scheme, will old URLs to blog objects not be valid anymore. If you want to keep 
+the old item URLs valid you can use the NP_LMRedirectToItem plugin to redirect the old URLs to the 
+new ones.
+</p>
+
+<p>
+When there is more than one URL that points to one blog item is it a chance that this blog item get duplicate entries in 
+search engines. To avoid this can a &lt;link&gt; tag with rel="canonical" in the &lt;head&gt; section of the item page be 
+used to point to the unique URL to use for the blog item. The NP_LMFancierURL plugin has a skin variable to help you add a 
+canonical URL for blog items. Add the following to the &lt;head&gt; section of the item skin to set the canonical URL for 
+the blog item:
+</p>
+
+ <pre>&lt;link rel="canonical" href="&lt;%LMFancierURL(canonicalitemlink)%&gt;" /&gt;
+</pre>
+
+<p>
+When you change URL scheme or change the URL part for an item will the item get a new canonical URL. If you want to notify 
+search engines of the URL change you can use the NP_LMRedirectToItem plugin to set up a redirect for the old item URL.
+</p>
+
+<p>
+With freeform item URL parts you can freely specify the content of the item URL. 
+The freeform item URL part must always start with a / character and is relative to the blog URL.
+Freeform item URL parts are independently of the configured URL scheme. 
+</p>
+
+<p>
+When a freeform item URL part is registered for an item, will the freeform item URL part always be used to generate the URL for the item.
+If a freeform item URL part is used to generate an item URL will not urlparts for other blog objects besides the item be added to the URL. 
+URL parts for other blog object can be added manually to the freeform item URL part, but they can not be parsed. 
+Freeform item URL parts is by default disabled.
+</p>
+
+<p>
+The main purpose of the custom base URL functionality is to be able to set up blogs with different domians on the same Nucleus installation.
+Each custom base URL must point to the same directory on the web-server as the default base URL. 
+The default base URL is the URL you assigned to the <code>$CONF['Self']</code> variable in the <code>index.php</code> file.
+</p>
+
+<h3>Support and Bug reports</h3>
+
+<p>
+For additional support and/or bug reports please use the Nucleus forum 
+<a href="http://forum.nucleuscms.org/viewtopic.php?t=20320"">plugin announce thread</a> 
+or the <a href="http://nucleus.slightlysome.net/plugins/lmfancierurl">plugin page</a> comment section.
+</p>
+
+<h3>Plugin support</h3>
+
+<p>
+Some plugins adds their own parts to generated URLs. These plugins must either use NP_LMURLParts to register the values used, 
+or support for these plugins must be added to the NP_LMFancierURL plugin. If not will the NP_LMFancierURL plugin 
+return a 404 HTML error when the URL includes parts it don't know. 
+If you use plugins that adds their own parts to the URL that are not supported, please report about these plugins in the Nucleus forum 
+<a href="http://forum.nucleuscms.org/viewtopic.php?t=20320"">plugin announce thread</a> 
+or in the <a href="http://nucleus.slightlysome.net/plugins/lmfancierurl">plugin page</a> comment section.
+</p>
+
+
+<h4>NP_ShowBlogs</h4>
+
+<p>
+The NP_ShowBlogs plugin can be used together with the NP_LMFancierURL plugin without extra set up.
+</p>
+
+<h4>NP_TechnoratiTags</h4>
+
+<p>
+If you want to use the NP_LMFancierURL plugin together with the NP_TechnoratiTags plugin you have to do the following:
+</p>
+
+<ul>
+<li>Use the NP_LMFancierURL rewrite rules and set up the <code>$CONF['Self']</code> variable as described in the NP_LMFancierURL Installation documentation.</li>
+<li>Do <b>not</b> make a <code>tags.php</code> file as described in the NP_TechnoratiTags documentation.</li>
+<li>Make a skin called <code>tags</code> as described in the NP_TechnoratiTags documentation where the main index includes the <code>&lt;%TechnoratiTags(tagsearch)%&gt;</code> skin variable.</li>
+</ul>
+
+<h3>Compability</h3>
+
+<p>
+This version of the NP_LMFancierURL is tested against version 3.64 of Nucleus CMS. The minimum version of Nucleus CMS needed for using this plugin is 3.50 
+and the minimum version of the NP_LMURLParts plugin needed by this plugin is version 1.1.1. 
+The mod_rewrite module must be enabled on the web server. 
+</p>
+
+<h3>Version History</h3>
+
+<ul>
+<li><b>v1.0.0 2011-02-20:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Based on NP_FancierURL2 v0.6 by various authors.</li>
+<li>The parameters in the generated URL is now in a fixed order.</li>
+<li>Fix: The "extra" parameters are now included in the generated URL with the correct defined parameter names.</li>
+<li>Fix: Handling of categories in a mulitblog environment.</li>
+<li>Fix: Handling of categories in combination with archive and archives parameters.</li>
+<li>The title part of item URLs is now unique for a blog. Also changed handling of duplicate titles.</li>
+<li>The member name in member URLs is now made URL-friendy because it could include spaces and mixed case.</li>
+<li>New option to make /blogid/name part of generated URLs optional for the default blog.</li>
+<li>Workaround for bug in Nucleus core when parsing /specical/name URLs.</li>
+<li>Fix: Error handling when URL is referring to unknown blogs, items, categories and members.</li>
+</ul>
+
+<li><b>v2.0.0 2011-06-27:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Rewritten from scratch.</li>
+<li>2 new URL schemes: Compact and Classic. URL schemes are configurable on site and blog level.</li>
+<li>All URL parts are editable.</li>
+<li>
+Uses NP_LMURLParts plugin to handle and edit URL parts and keywords. The editing is done in the NP_LMURLParts plugin admin page. 
+A user can edit the parts and keywords for the blogs he is admin for. The superadmin can edit global parts and keywords and the 
+parts and keywords for all blogs.
+</li>
+<li>Keywords are configurable on site and blog level.</li>
+<li>Support for extra skin parts.</li>
+<li>Better handling of non ASCII 7-bit characters when making URL friendly text values.</li>
+<li>How to handle category in item URLs is configurable on site and blog level.</li>
+<li>Archive URL values are added to the plugin and are also editable. This mean you can have custom URL parts for each month and date used in the archives.</li>
+<li>Will return a 404 not found HTML error using the error skin when the URL contain unknown parts.</li>
+<li>Item skinvar that return a canonical item URL that can be used as canonical link in item page &lt;head&gt; section.</li>
+</ul>
+
+<li><b>v2.0.1 2011-08-06:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Fixed problem with identifying used url scheme when parsing an url.</li>
+</ul>
+
+<li><b>v2.1.0 2011-08-27:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Freeform item URL parts.</li>
+<li>Implemented my suggested <a href="http://forum.nucleuscms.org/viewtopic.php?t=20531">plugin data upgrade handling</a>. 
+The plugin does the upgrade handling by itself, and is not dependent of any core changes or other handling plugins.</li>
+<li>Implemented my suggested <a href="http://forum.nucleuscms.org/viewtopic.php?t=20556">AdminPluginNotification event</a> in the plugin. 
+Used AdminPrePageFoot event to trigger the AdminPluginNotification event. Will show the notification on the bottom of the admin pages instead on the top as suggested. 
+Used for notification on upgrade handling status and NP_LMURLParts version status.</li>
+<li>Admin page with possibility to rebuild URL parts and show help page.</li>
+</ul>
+
+<li><b>v2.1.1 2011-09-17:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Added function on the admin page to update special skin part URL parts. Because the plugin can't catch special skin parts being added to a skin or removed from a skin, 
+must this function be used after a special skin part has been added to a skin or removed from a skin.</li>
+<li>Uses Nucleus admin page notification to inform if a special skin part URL parts update is neccesary.</li>
+</ul>
+
+<li><b>v3.0.0 2012-07-29:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Possible to set a custom base URL for each blog. This will let you host blogs with different domains on the same Nucleus installation.</li>
+<li>Option to redirect to the URL of the default blog index page when a base URL is used.</li>
+<li>Option to include blog in generated member links to ensure the correct skin is used on the member page.</li>
+<li>Fixed problem where the urlpart of a new item got a -2 postfix if the item was auto saved to draft before it was saved.</li>
+<li>Fixed problem with search in other blogs than the default blog.</li>
+<li>Support for other plugins to manipulate parameters when generating URLs, and to get URL parse result.</li>
+<li>Requires version 1.1.1 of the NP_LMURLParts plugin.</li> 
+</ul>
+<li><b>v3.0.1 2013-05-20:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Changes for PHP 5.4.</li>
+</ul>
+<li><b>v3.0.2 2014-02-15:</b> by Leo (http://www.slightlysome.net)</li>
+<ul>
+<li>Support for the NP_TechnoratiTags plugin.</li>
+</ul>
+</ul>
+
+<h3>Download</h3>
+
+<p>
+<a href="http://nucleus.slightlysome.net/files/NP_LMFancierURL_v302.zip" title="Download NP_LMFancierURL_v302.zip">Download NP_LMFancierURL v3.0.2</a>.
+The latest version of the NP_LMFancierURL plugin can be downloaded from the NP_LMFancierURL <a href="http://nucleus.slightlysome.net/plugins/lmfancierurl">plugin page</a>.
+</p>
+<p>
+The latest version of the NP_LMURLParts plugin can be downloaded from the NP_LMURLParts <a href="http://nucleus.slightlysome.net/plugins/lmurlparts">plugin page</a>.
+</p>
